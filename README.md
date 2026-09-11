@@ -1,9 +1,12 @@
-# RADIESTESIA SOLAR
+# SOLAR — teste visual editorial
 
-Atualização do relatório — Protocolo 1:
+Protótipo de apresentação digital do relatório com linguagem de apresentação editorial/contemporânea.
 
-- Padrões/causas aparecem hierarquizados por Campo emocional e Campo mental.
-- A categoria-mãe aparece uma única vez com célula mesclada verticalmente.
-- Cada causa selecionada ocupa sua própria linha na segunda coluna.
-- Não são inseridas interpretações genéricas quando a fonte disponível só oferece interpretações cruzadas por chakra e tipo de limite.
-- As demais funcionalidades e a geração/impressão do relatório foram preservadas.
+- Formulário funcional preservado.
+- Capa digital ampla.
+- Protocolos 01/02/03 com identidade visual própria.
+- Hierarquia de títulos e maior uso de espaço em branco.
+- Receituário final transformado em destaque de encerramento.
+- Corpo do relatório em Arial Narrow 11 pt.
+- Responsivo para computador, tablet e celular.
+- Impressão/PDF preservada.
