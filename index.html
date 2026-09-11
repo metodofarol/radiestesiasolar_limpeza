@@ -775,8 +775,9 @@ input[type="checkbox"]:focus-visible{outline:2px solid #d8afc6;outline-offset:2p
   /* Capa: ocupa a primeira página com escala tipográfica própria para impressão. */
   .report-cover{
     display:grid!important;
-    grid-template-columns:minmax(0,1.35fr) minmax(52mm,.65fr)!important;
-    align-items:center!important;
+    grid-template-columns:1fr!important;
+    align-content:start!important;
+    align-items:start!important;
     min-height:calc(297mm - 28mm)!important;
     height:calc(297mm - 28mm)!important;
     padding:18mm 15mm!important;
@@ -791,8 +792,21 @@ input[type="checkbox"]:focus-visible{outline:2px solid #d8afc6;outline-offset:2p
     margin-top:6mm!important;
   }
   .report-cover .report-author{font-size:12pt!important;margin-top:7mm!important}
-  .report-cover .cover-meta{align-self:center!important}
-  .report-cover .meta-value{font-size:15pt!important}
+  .report-cover .cover-meta{
+    align-self:start!important;
+    border-top:0!important;
+    padding:0!important;
+    margin-top:9mm!important;
+    display:grid!important;
+    grid-template-columns:max-content 1fr!important;
+    column-gap:7mm!important;
+    row-gap:2mm!important;
+    width:max-content!important;
+    max-width:100%!important;
+  }
+  .report-cover .cover-meta .meta-label{margin:0!important;align-self:baseline!important}
+  .report-cover .cover-meta .meta-value{font-size:13pt!important;margin:0!important;align-self:baseline!important}
+
 
   /* Encerramento: continuidade + assinatura formam uma única página final. */
   .closing-page{
@@ -830,6 +844,41 @@ input[type="checkbox"]:focus-visible{outline:2px solid #d8afc6;outline-offset:2p
     break-before:avoid-page!important;
     page-break-before:avoid!important;
   }
+}
+</style>
+
+<style id="solar-print-final-synthesis-page-v5">
+/* PDF: "Seu tratamento" sempre começa em uma página exclusiva.
+   Se o conteúdo ultrapassar uma página, a continuação ocorre apenas entre os cartões. */
+@media print{
+  .final-synthesis{
+    break-before:page!important;
+    page-break-before:always!important;
+    break-after:page!important;
+    page-break-after:always!important;
+    break-inside:auto!important;
+    page-break-inside:auto!important;
+    margin:0!important;
+    box-shadow:none!important;
+  }
+  .final-synthesis-head{
+    break-inside:avoid!important;
+    page-break-inside:avoid!important;
+    break-after:avoid-page!important;
+    page-break-after:avoid!important;
+    margin-bottom:6mm!important;
+  }
+  /* Em impressão, fluxo normal pagina melhor que CSS Grid. */
+  .final-synthesis .syn-grid{
+    display:block!important;
+  }
+  .final-synthesis .syn-item{
+    display:grid!important;
+    break-inside:avoid!important;
+    page-break-inside:avoid!important;
+    margin:0 0 4mm!important;
+  }
+  .final-synthesis .syn-item:last-child{margin-bottom:0!important;}
 }
 </style>
 </head><body><div class="app"><div class="top"><h1>RADIESTESIA SOLAR — LIMPEZA E PROTEÇÃO — ATENDIMENTO INICIAL</h1><p><strong>FORMULÁRIO — USO INTERNO DO TERAPEUTA.</strong> Aqui podem constar lembretes, orientações de preenchimento e observações de trabalho. O relatório gerado é destinado ao cliente e apresenta somente informações pertinentes ao atendimento.</p><div class="toolbar"><button class="primary" id="makeReport">Gerar / atualizar relatório</button><button id="printReport">Imprimir / salvar PDF</button><button id="backForm">Voltar ao formulário</button><button id="clearForm">Limpar atendimento</button><span class="save" id="saveStatus">Salvamento automático ativo</span></div></div><div class="form" id="form"></div><div class="report" id="report"></div></div>
