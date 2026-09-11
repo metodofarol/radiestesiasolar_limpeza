@@ -265,6 +265,67 @@ input[type="checkbox"]:focus-visible{outline:2px solid #d8afc6;outline-offset:2p
  .report-cover,.quote-cover{break-after:page;page-break-after:always;min-height:calc(297mm - 28mm);box-sizing:border-box}
  .signature-cover{break-before:auto;page-break-before:auto;break-after:auto;page-break-after:auto;min-height:62mm;max-width:none;margin-top:8mm;padding:10mm 14mm;border-radius:8mm;box-sizing:border-box}
 }
+
+/* Capa refinada: paleta coerente + composição tipográfica em grid */
+.report-cover{
+  min-height:560px;
+  padding:64px 68px 58px;
+  grid-template-columns:minmax(0,1.45fr) minmax(220px,.55fr);
+  background:
+    radial-gradient(circle at 4% 96%,rgba(112,126,101,.16) 0 118px,transparent 119px),
+    linear-gradient(135deg,#fbf8f1 0%,#f7f3e9 100%);
+  border-bottom:0;
+}
+.report-cover::after{display:none!important}
+.report-cover .cover-eyebrow{color:#a56f2d!important;margin-bottom:28px}
+.report-cover h1{
+  color:#405b57!important;
+  font-size:43pt;
+  line-height:.92;
+  letter-spacing:-1.5px;
+  margin:0;
+  white-space:nowrap;
+}
+.cover-title-row{
+  display:grid;
+  grid-template-columns:auto minmax(170px,235px);
+  align-items:start;
+  gap:28px;
+  margin-top:7px;
+}
+.cover-solar{
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:43pt;
+  line-height:.92;
+  font-weight:800;
+  letter-spacing:-1.5px;
+  color:#405b57;
+}
+.report-cover .report-subtitle{
+  margin:3px 0 0!important;
+  padding:12px 14px;
+  max-width:none!important;
+  background:#eee7cf;
+  color:#4b514a!important;
+  font-size:8.7pt!important;
+  line-height:1.42!important;
+  letter-spacing:.1px!important;
+}
+.report-cover .report-author{
+  margin-top:28px!important;
+  color:#405b57!important;
+  font-size:11.5pt!important;
+  font-weight:700!important;
+  padding-left:1px;
+}
+.report-cover .cover-meta{color:#405b57}
+@media(max-width:760px){
+  .report-cover{grid-template-columns:1fr;padding:42px 32px;min-height:auto}
+  .report-cover h1,.cover-solar{font-size:34pt}
+  .cover-title-row{grid-template-columns:1fr;gap:16px}
+  .report-cover .report-subtitle{max-width:260px!important}
+}
+
 </style>
 <style id="solar-treatment-callouts">
 /* Destaques de tratamento ao final de cada protocolo — inspiração infográfica, sem copiar o layout de referência. */
@@ -644,7 +705,7 @@ function finalSynthesis(d){
   const card=(num,title,items,cls)=>items&&items.length?`<div class="syn-item ${cls}"><div class="syn-marker">${num}</div><div class="syn-card-body"><span class="syn-label">${esc(title)}</span><div class="syn-prescription">${esc(joinText(items))}</div></div></div>`:'';
   return `<section class="final-synthesis"><div class="final-synthesis-head"><div><div class="cover-eyebrow">Síntese final</div><h2>Seu tratamento</h2></div><p class="final-synthesis-note">Recursos definidos a partir da leitura conjunta dos três protocolos.</p></div><div class="syn-grid">${card('01','Geometrias sagradas · gráficos radiônicos',geometries,'syn-geo')}${card('02','Florais de Bach',florals,'syn-floral')}${card('03','Aromaterapia',aromas,'syn-aroma')}${card('04','Outros recursos de harmonização',others,'syn-other')}${card('05','Caminhos e reflexões para o cuidado de si',symbolic,'syn-symbolic')}</div></section>`;
 }
-function report(){const d=getData();let h=`<div class="rpage" contenteditable="true"><section class="report-cover"><div><div class="cover-eyebrow">Relatório de atendimento</div><h1>RADIESTESIA<br>SOLAR</h1><div class="report-subtitle">Sistema de Observação, Limpeza, Alinhamento e Reintegração</div><div class="report-author">Rodrigo Bittencourt</div></div><div class="cover-meta"><div class="meta-label">Cliente</div><div class="meta-value">${esc(d.fields.cliente||'—')}</div><div class="meta-label">Data da sessão</div><div class="meta-value">${esc(d.fields.sessao||'—')}</div></div></section><section class="quote-cover"><div class="quote-inner"><div class="quote-mark">“</div><blockquote class="quote-text">Há mais coisas que nos podem assustar do que aquelas que nos podem destruir; sofremos mais frequentemente na imaginação do que na realidade.</blockquote><div class="quote-credit"><strong>Sêneca</strong><em>Cartas Morais a Lucílio</em> · Carta 13</div></div></section><div class="report-content"><section class="report-intro"><h2 class="intro-title">Sobre este relatório</h2><div class="intro-copy">A radiestesia é utilizada como prática complementar de investigação de padrões e respostas percebidas no campo energético. Embora possua tradição de uso, seus métodos e resultados não são reconhecidos como procedimentos diagnósticos ou terapêuticos da medicina ou da psicologia e não dispõem de evidências científicas suficientes para substituir práticas clínicas validadas.<br><br>Este relatório apresenta uma <strong>leitura radiestésica complementar</strong>, destinada à observação e à reflexão sobre aspectos energéticos, emocionais, mentais e simbólicos investigados durante o atendimento. Seus resultados não constituem diagnóstico médico ou psicológico e não substituem consultas, exames, tratamentos ou acompanhamento realizados por profissionais habilitados da saúde.<br><br><strong>Radiestesia SOLAR</strong> — Sistema de Observação, Limpeza, Alinhamento e Reintegração — é uma metodologia de atendimento desenvolvida e organizada por <strong>Rodrigo Bittencourt</strong>. O método integra diferentes matrizes de investigação e recursos radiestésicos em uma sequência própria, articulando a identificação de campos e limites, a observação de influências e a investigação de sentimentos e leituras simbólicas. Os achados dos três protocolos são então relacionados em uma leitura conjunta, que orienta o plano individualizado de harmonização.<br><br>Na construção do método SOLAR, matrizes e referências de diferentes escolas são estudadas, adaptadas e integradas ao protocolo autoral. Entre as referências utilizadas neste atendimento estão trabalhos de <strong>Larissa Pizzol</strong> e <strong>Luciana Silveira</strong>, reorganizados dentro da estrutura metodológica do SOLAR.</div></section>`;
+function report(){const d=getData();let h=`<div class="rpage" contenteditable="true"><section class="report-cover"><div class="cover-main"><div class="cover-eyebrow">Relatório de atendimento</div><h1>RADIESTESIA</h1><div class="cover-title-row"><div class="cover-solar">SOLAR</div><div class="report-subtitle">Sistema de Observação,<br>Limpeza, Alinhamento<br>e Reintegração</div></div><div class="report-author">Rodrigo Bittencourt</div></div><div class="cover-meta"><div class="meta-label">Cliente</div><div class="meta-value">${esc(d.fields.cliente||'—')}</div><div class="meta-label">Data da sessão</div><div class="meta-value">${esc(d.fields.sessao||'—')}</div></div></section><section class="quote-cover"><div class="quote-inner"><div class="quote-mark">“</div><blockquote class="quote-text">Há mais coisas que nos podem assustar do que aquelas que nos podem destruir; sofremos mais frequentemente na imaginação do que na realidade.</blockquote><div class="quote-credit"><strong>Sêneca</strong><em>Cartas Morais a Lucílio</em> · Carta 13</div></div></section><div class="report-content"><section class="report-intro"><h2 class="intro-title">Sobre este relatório</h2><div class="intro-copy">A radiestesia é utilizada como prática complementar de investigação de padrões e respostas percebidas no campo energético. Embora possua tradição de uso, seus métodos e resultados não são reconhecidos como procedimentos diagnósticos ou terapêuticos da medicina ou da psicologia e não dispõem de evidências científicas suficientes para substituir práticas clínicas validadas.<br><br>Este relatório apresenta uma <strong>leitura radiestésica complementar</strong>, destinada à observação e à reflexão sobre aspectos energéticos, emocionais, mentais e simbólicos investigados durante o atendimento. Seus resultados não constituem diagnóstico médico ou psicológico e não substituem consultas, exames, tratamentos ou acompanhamento realizados por profissionais habilitados da saúde.<br><br><strong>Radiestesia SOLAR</strong> — Sistema de Observação, Limpeza, Alinhamento e Reintegração — é uma metodologia de atendimento desenvolvida e organizada por <strong>Rodrigo Bittencourt</strong>. O método integra diferentes matrizes de investigação e recursos radiestésicos em uma sequência própria, articulando a identificação de campos e limites, a observação de influências e a investigação de sentimentos e leituras simbólicas. Os achados dos três protocolos são então relacionados em uma leitura conjunta, que orienta o plano individualizado de harmonização.<br><br>Na construção do método SOLAR, matrizes e referências de diferentes escolas são estudadas, adaptadas e integradas ao protocolo autoral. Entre as referências utilizadas neste atendimento estão trabalhos de <strong>Larissa Pizzol</strong> e <strong>Luciana Silveira</strong>, reorganizados dentro da estrutura metodológica do SOLAR.</div></section>`;
 h+=`<section class="rsection identification-card"><h2>Identificação</h2>${table([[`Nome`,esc(d.fields.cliente||'')],[`Data de nascimento`,esc(d.fields.nascimento||'')],[`Terapeuta`,esc(d.fields.terapeuta||'')],[`Data da sessão`,esc(d.fields.sessao||'')],[`Queixa principal`,editable(esc(d.fields.queixa||''))]],['Campo','Registro'])}</section>`;
 const br=bovisRows.map((x,i)=>[esc(x),esc(d.fields['bovis_'+i+'_antes']||''),esc(d.fields['bovis_'+i+'_depois']||'')]).filter(r=>r[1]||r[2]); h+=sec('Biômetro de Bovis',table(br,['Medição','Antes da sessão','Após a sessão'])+`<p class="bovis-reference-note"><strong>Referência de saúde energética:</strong> 6.000 UB.</p>`);
 h+=sec('Chakras envolvidos na questão',table(chakraRows(d),['Chakra','Síntese geral']));
@@ -706,4 +767,8 @@ $('#makeReport').onclick=report;const finalReportBtn=$('#generateFinalReport');i
   display:none !important;
   content:none !important;
 }
+</style>
+<style id="solar-remove-cover-meta-line">
+/* Remove a linha ornamental acima dos metadados da capa. */
+.report-cover .cover-meta{border-top:0!important;}
 </style>
