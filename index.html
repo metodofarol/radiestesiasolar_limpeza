@@ -854,11 +854,11 @@ input[type="checkbox"]:focus-visible{outline:2px solid #d8afc6;outline-offset:2p
   .final-synthesis{
     break-before:page!important;
     page-break-before:always!important;
-    break-after:page!important;
-    page-break-after:always!important;
+    break-after:auto!important;
+    page-break-after:auto!important;
     break-inside:auto!important;
     page-break-inside:auto!important;
-    margin:0!important;
+    margin:0 0 7mm!important;
     box-shadow:none!important;
   }
   .final-synthesis-head{
@@ -952,6 +952,32 @@ input[type="checkbox"]:focus-visible{outline:2px solid #d8afc6;outline-offset:2p
   }
   .report-cover .cover-brand-wrap .report-subtitle span:not(:last-child)::after{
     content:" "!important;
+  }
+}
+</style>
+
+<style id="solar-print-final-observations-flow-v8">
+@media print{
+  /* Observações finais podem aproveitar o espaço restante da última página de “Seu tratamento”.
+     Só passam para a página seguinte quando realmente não houver espaço suficiente. */
+  .final-observations{
+    break-before:auto!important;
+    page-break-before:auto!important;
+    break-after:auto!important;
+    page-break-after:auto!important;
+    break-inside:avoid!important;
+    page-break-inside:avoid!important;
+    margin:7mm 0 0!important;
+  }
+  .final-observations>h2{
+    break-after:avoid-page!important;
+    page-break-after:avoid!important;
+    margin-bottom:3mm!important;
+  }
+  /* A página final continua exclusiva: continuidade do cuidado + assinatura. */
+  .closing-page{
+    break-before:page!important;
+    page-break-before:always!important;
   }
 }
 </style>
@@ -1248,8 +1274,8 @@ let p3Report=`<h3>Causas</h3>${table(cr,['Eixo','Descrição / informação'])}<
 p3Report+=protocolComment(d,'comentario_p3');
 h+=protocolBox('Protocolo 3 — Sentimentos e leitura simbólica',p3Report);
 h+=finalSynthesis(d);
-const obsGerais=(d.fields.observacoes_gerais||'').trim();if(obsGerais)h+=sec('Observações finais',`<div class="rtext">${editable(esc(obsGerais))}</div>`);
-h+=`<section class="closing-page">${sec('Continuidade do cuidado',`<div class="rtext">Este atendimento pode ser compreendido como uma etapa de um processo mais amplo de autoconhecimento e cuidado integral. Quando fizer sentido para o seu momento, outros percursos podem complementar a investigação realizada, com protocolos direcionados à <strong>saúde e ao bem-estar, prosperidade, vida profissional e vocacional</strong>, além de práticas como <strong>Reiki e Tarô</strong>. A escolha de um novo percurso é sempre um convite à continuidade — não uma necessidade.</div>`)}<section class="signature-cover"><div class="signature-wrap"><div class="signature-kicker">Com cuidado e presença</div><div class="signature-name"><span class="signature-first">Rodrigo</span><span class="signature-last">Bittencourt</span></div><div class="signature-line"></div><div class="signature-brand">Radiestesia Solar</div></div></section></section></div></div>`;
+const obsGerais=(d.fields.observacoes_gerais||'').trim();if(obsGerais)h+=`<section class="rsection final-observations"><h2>Observações finais</h2><div class="rtext">${editable(esc(obsGerais))}</div></section>`;
+h+=`<section class="closing-page">${sec('Continuidade do cuidado',`<div class="rtext">Este atendimento pode ser compreendido como uma etapa de um processo mais amplo de autoconhecimento e cuidado integral. Quando fizer sentido para o seu momento, outros percursos podem complementar a investigação realizada, com protocolos direcionados à <strong>saúde e ao bem-estar, prosperidade, vida profissional e vocacional</strong>, além de práticas como <strong>Reiki e Tarô</strong>. A escolha de um novo percurso é um convite à continuidade do cuidado.</div>`)}<section class="signature-cover"><div class="signature-wrap"><div class="signature-kicker">Com cuidado e presença</div><div class="signature-name"><span class="signature-first">Rodrigo</span><span class="signature-last">Bittencourt</span></div><div class="signature-line"></div><div class="signature-brand">Radiestesia Solar</div></div></section></section></div></div>`;
 const shell=`<div class="report-shell"><h2 class="report-shell-title">Visualização do relatório do cliente</h2>${h}<div class="report-toolbar"><button class="primary" id="exportPdfBottom">Exportar / salvar em PDF</button><button id="refreshReportBottom">Atualizar relatório</button><button id="goFormTop">Voltar ao início do formulário</button><div class="print-help" style="flex-basis:100%;font-size:12px;line-height:1.45;color:#6b625b;text-align:center;margin-top:4px"><strong>Para salvar em PDF:</strong> use papel A4, <strong>Margens: Padrão</strong>, escala 100% e ative “Gráficos de fundo”.</div></div></div>`;
 $('#report').innerHTML=shell;$('#form').style.display='block';$('#report').style.display='block';
 $('#exportPdfBottom').onclick=()=>setTimeout(()=>window.print(),50);
