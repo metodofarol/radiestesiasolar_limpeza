@@ -1,1 +1,1 @@
-SOLAR — versão com destaques infográficos de tratamento ao final de cada protocolo.
+SOLAR — assinatura ajustada: Rodrigo Bittencourt na mesma tipografia serifada itálica.
