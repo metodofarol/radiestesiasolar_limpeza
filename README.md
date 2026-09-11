@@ -1,1 +1,1 @@
-SOLAR — assinatura ajustada: Rodrigo Bittencourt na mesma tipografia serifada itálica.
+Versão com correção robusta da capa na impressão: dados do atendimento sempre abaixo de Rodrigo Bittencourt, evitando colisão com margens padrão.
