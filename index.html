@@ -1797,3 +1797,22 @@ $('#makeReport').onclick=report;const finalReportBtn=$('#generateFinalReport');i
   }
 }
 </style>
+<style id="solar-print-page-background-fix-v14">
+@media print{
+  /* Evita que a cor-base rosada do .rpage apareça nas sobras de área
+     das páginas especiais (capa/citação). A área não ocupada pelo bloco
+     passa a continuar na mesma família creme do projeto. */
+  .rpage{
+    background:#fbf8f1!important;
+  }
+  .report-cover{
+    box-shadow:0 45mm 0 #f7f3e9!important;
+  }
+  .quote-cover{
+    box-shadow:0 45mm 0 #eef0e4!important;
+  }
+  .report-content{
+    background:#fffdf8!important;
+  }
+}
+</style>
