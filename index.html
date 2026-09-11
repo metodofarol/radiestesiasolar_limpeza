@@ -336,6 +336,14 @@ input[type="checkbox"]:focus-visible{outline:2px solid #d8afc6;outline-offset:2p
   .report-cover .report-subtitle{max-width:260px!important}
 }
 
+
+.checks-column-major{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 28px}
+.checks-column-major .checks-major-col{display:flex;flex-direction:column;gap:10px}
+.checks-column-major label{display:flex;align-items:flex-start;gap:9px;min-width:0}
+@media(max-width:760px){.checks-column-major{grid-template-columns:1fr}.checks-column-major .checks-major-col{gap:10px}}
+
+/* Preserva parágrafos e quebras de linha digitados nos campos do formulário. */
+.editable-text,.rtext{white-space:pre-wrap;}
 </style>
 <style id="solar-treatment-callouts">
 /* Destaques de tratamento ao final de cada protocolo — inspiração infográfica, sem copiar o layout de referência. */
@@ -1024,12 +1032,14 @@ function protocol(title,body,hint=''){return `<section class="protocol"><div cla
 function checks(group,items,cols='checks'){return `<div class="${cols}">${items.map(x=>`<label><input type="checkbox" data-group="${esc(group)}" value="${esc(x)}"> <span>${esc(x)}</span></label>`).join('')}</div>`}
 function field(id,label,type='text'){return `<div class="field"><label for="${id}">${esc(label)}</label>${type==='textarea'?`<textarea id="${id}" data-field="${id}"></textarea>`:`<input id="${id}" type="${type}" data-field="${id}">`}</div>`}
 function checksColumnMajor(group,items,columns=3){
-  const rows=Math.ceil(items.length/columns),ordered=[];
-  for(let r=0;r<rows;r++)for(let c=0;c<columns;c++){
-    const i=c*rows+r;
-    if(i<items.length)ordered.push(items[i]);
+  const sorted=alphaOtherLast(items);
+  const rows=Math.ceil(sorted.length/columns);
+  const cols=[];
+  for(let c=0;c<columns;c++){
+    const chunk=sorted.slice(c*rows,Math.min((c+1)*rows,sorted.length));
+    if(chunk.length) cols.push(`<div class="checks-major-col">${chunk.map(x=>`<label><input type="checkbox" data-group="${esc(group)}" value="${esc(x)}"> <span>${esc(x)}</span></label>`).join('')}</div>`);
   }
-  return checks(group,ordered);
+  return `<div class="checks-column-major">${cols.join('')}</div>`;
 }
 function axis(title,group,items,cls=''){return details(title,checks(group,items),cls)}
 function alphaOtherLast(items){const a=[...items];const outros=a.filter(x=>String(x).trim().toLocaleLowerCase('pt-BR')==='outros');const rest=a.filter(x=>String(x).trim().toLocaleLowerCase('pt-BR')!=='outros').sort((x,y)=>String(x).localeCompare(String(y),'pt-BR',{sensitivity:'base'}));return [...rest,...outros]}
@@ -1242,7 +1252,7 @@ function graphRows(items){return items.map(x=>[esc(x),editable(esc(GRAPH_DESC[x]
 function selected(d,g){return d.groups[g]||[]}
 function table(rows,heads=['Item','Informação / interpretação']){if(!rows.length)return '';return `<table class="rtable"><thead><tr>${heads.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c??''}</td>`).join('')}</tr>`).join('')}</tbody></table>`}
 function sec(title,content){return content?`<section class="rsection"><h2>${esc(title)}</h2>${content}</section>`:''}
-function editable(s=''){return `<div contenteditable="true">${s||'<br>'}</div>`}
+function editable(s=''){return `<div contenteditable="true" class="editable-text">${s||'<br>'}</div>`}
 function rowsEditable(items,desc={}){return items.map(x=>[esc(x),editable(esc(desc[x]||''))])}
 function chakraRows(d){return selected(d,'chakras').map(x=>[esc(CHAKRAS[x]?.nome||x),editable(esc(CHAKRAS[x]?.resumo||''))])}
 function limitRows(d){
@@ -1332,8 +1342,12 @@ function finalSynthesis(d){
   return `<section class="final-synthesis"><div class="final-synthesis-head"><div><div class="cover-eyebrow">Síntese final</div><h2>Seu tratamento</h2></div><p class="final-synthesis-note">Recursos definidos a partir da leitura conjunta dos três protocolos.</p></div><div class="syn-grid">${card('01','Geometrias sagradas · gráficos radiônicos',geometries,'syn-geo')}${card('02','Florais de Bach',florals,'syn-floral')}${card('03','Aromaterapia',aromas,'syn-aroma')}${card('04','Outros recursos de harmonização',others,'syn-other')}${card('05','Caminhos e reflexões para o cuidado de si',symbolic,'syn-symbolic')}</div>${observations}</section>`;
 }
 function docxXmlEsc(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function docxRunsForText(t,fmt={}){
+  const parts=String(t??'').split(/\r?\n/);
+  return parts.map((part,i)=>`${i?'<w:r><w:br/></w:r>':''}<w:r><w:rPr>${fmt.bold?'<w:b/>':''}${fmt.italic?'<w:i/>':''}</w:rPr><w:t xml:space="preserve">${docxXmlEsc(part)}</w:t></w:r>`).join('');
+}
 function docxRunsFromNode(node,fmt={}){
-  if(node.nodeType===3){const t=node.nodeValue||'';if(!t)return '';return `<w:r><w:rPr>${fmt.bold?'<w:b/>':''}${fmt.italic?'<w:i/>':''}</w:rPr><w:t xml:space="preserve">${docxXmlEsc(t)}</w:t></w:r>`}
+  if(node.nodeType===3){const t=node.nodeValue||'';if(!t)return '';return docxRunsForText(t,fmt)}
   if(node.nodeType!==1)return '';
   const tag=node.tagName;
   if(tag==='BR')return '<w:r><w:br/></w:r>';
@@ -1347,7 +1361,7 @@ function docxParagraphFromElement(el,style='',opts={}){
 }
 function docxParagraphText(text,style='',opts={}){
   const ppr=[style?`<w:pStyle w:val="${style}"/>`:'',opts.pageBreakBefore?'<w:pageBreakBefore/>':'',opts.keepNext?'<w:keepNext/>':''].join('');
-  return `<w:p><w:pPr>${ppr}</w:pPr><w:r>${opts.bold?'<w:rPr><w:b/></w:rPr>':''}<w:t xml:space="preserve">${docxXmlEsc(text)}</w:t></w:r></w:p>`;
+  return `<w:p><w:pPr>${ppr}</w:pPr>${docxRunsForText(text,{bold:opts.bold})}</w:p>`;
 }
 function docxTableXml(tableEl){
   const rows=Array.from(tableEl.querySelectorAll(':scope > thead > tr, :scope > tbody > tr, :scope > tr'));
