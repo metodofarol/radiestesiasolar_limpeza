@@ -102,10 +102,11 @@ input[type="checkbox"]:focus-visible{outline:2px solid #d8afc6;outline-offset:2p
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const state={}; const STORAGE='solar_limpeza_protecao_v1';
 function esc(s){return String(s??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]))}
-function details(title,body){return `<details><summary>${esc(title)}</summary><div class="inside">${body}</div></details>`}
+function details(title,body,cls=''){return `<details class="${esc(cls)}"><summary>${esc(title)}</summary><div class="inside">${body}</div></details>`}
+function protocol(title,body,hint=''){return `<section class="protocol"><div class="protocol-title"><div><h2>${esc(title)}</h2>${hint?`<p>${esc(hint)}</p>`:''}</div></div><div class="protocol-body">${body}</div></section>`}
 function checks(group,items,cols='checks'){return `<div class="${cols}">${items.map(x=>`<label><input type="checkbox" data-group="${esc(group)}" value="${esc(x)}"> <span>${esc(x)}</span></label>`).join('')}</div>`}
 function field(id,label,type='text'){return `<div class="field"><label for="${id}">${esc(label)}</label>${type==='textarea'?`<textarea id="${id}" data-field="${id}"></textarea>`:`<input id="${id}" type="${type}" data-field="${id}">`}</div>`}
-function axis(title,group,items){return `<h3 class="sub">${esc(title)}</h3>${checks(group,items)}`}
+function axis(title,group,items,cls=''){return details(title,checks(group,items),cls)}
 const CHAKRAS={
 'Básico':{nome:'Chakra Básico (Muladhara)',resumo:'Energia, estabilidade, conforto e segurança. Relaciona-se à conexão da energia vital com a terra.'},
 'Sacral':{nome:'Chakra Sacral (Svadhishana)',resumo:'Sensualidade, intimidade, emoções, sociabilidade e criatividade.'},
