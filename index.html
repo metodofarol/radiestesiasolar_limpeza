@@ -1634,3 +1634,35 @@ $('#makeReport').onclick=report;const finalReportBtn=$('#generateFinalReport');i
 .form .protocol-body{padding:10px 0 0!important;}
 .form .protocol-body>details:first-child{margin-top:0!important;}
 </style>
+
+<style id="solar-print-no-blank-second-page-v10">
+@media print{
+  /* Evita a folha fantasma entre capa e citação.
+     Usar exatamente toda a área imprimível (269 mm) pode ultrapassar a página
+     por arredondamento do Chromium e fragmentar a capa em uma segunda folha. */
+  .report-cover,
+  .quote-cover{
+    box-sizing:border-box!important;
+    height:267mm!important;
+    min-height:267mm!important;
+    max-height:267mm!important;
+    overflow:hidden!important;
+    break-inside:avoid-page!important;
+    page-break-inside:avoid!important;
+  }
+
+  .report-cover{
+    break-before:auto!important;
+    page-break-before:auto!important;
+    break-after:page!important;
+    page-break-after:always!important;
+  }
+
+  .quote-cover{
+    break-before:auto!important;
+    page-break-before:auto!important;
+    break-after:page!important;
+    page-break-after:always!important;
+  }
+}
+</style>
