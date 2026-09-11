@@ -1090,6 +1090,65 @@ input[type="checkbox"]:focus-visible{outline:2px solid #d8afc6;outline-offset:2p
 }
 </style>
 
+
+<style id="solar-stable-simple-report-v18">
+/* Estrutura editorial simplificada para conteúdo longo e impressão estável. */
+.rtable.stable-table .repeat-group-cell{font-weight:700;vertical-align:top}
+.oracle-report-context.simple-long-text{
+  margin:18px 0 8px;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+}
+.oracle-report-context.simple-long-text h4{
+  margin:0 0 8px;
+  font-family:Georgia,'Times New Roman',serif;
+  font-size:12.5pt;
+  color:#30433f;
+}
+.oracle-report-context.simple-long-text .rtext,
+.oracle-report-context.simple-long-text .editable-text{
+  margin:0;
+  padding:0;
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+@media print{
+  /* Evita artefatos de fragmentação: nenhuma célula mesclada e bordas de linha únicas. */
+  .rtable.stable-table{
+    border-collapse:collapse!important;
+    border-spacing:0!important;
+    overflow:visible!important;
+  }
+  .rtable.stable-table th,
+  .rtable.stable-table td{
+    border-left:0!important;
+    border-right:0!important;
+    border-top:0!important;
+    border-bottom:1px solid #e7dfd7!important;
+  }
+  .rtable.stable-table tbody tr:last-child td{border-bottom:0!important}
+  .oracle-report-context.simple-long-text{
+    break-inside:auto!important;
+    page-break-inside:auto!important;
+    background:transparent!important;
+  }
+  .oracle-report-context.simple-long-text h4{
+    break-after:avoid-page!important;
+    page-break-after:avoid!important;
+  }
+  .oracle-report-context.simple-long-text .rtext,
+  .oracle-report-context.simple-long-text .editable-text{
+    break-inside:auto!important;
+    page-break-inside:auto!important;
+    orphans:3;
+    widows:3;
+  }
+}
+</style>
 </head><body><div class="app"><div class="top"><h1>RADIESTESIA SOLAR — LIMPEZA E PROTEÇÃO — ATENDIMENTO INICIAL</h1><p><strong>FORMULÁRIO — USO INTERNO DO TERAPEUTA.</strong> Aqui podem constar lembretes, orientações de preenchimento e observações de trabalho. O relatório gerado é destinado ao cliente e apresenta somente informações pertinentes ao atendimento.</p><div class="toolbar"><button class="primary" id="makeReport">Gerar / atualizar relatório</button><button id="printReport">Imprimir / salvar PDF</button><button id="docxReport">Exportar DOCX (editável)</button><button id="digitalReport">Versão digital contínua</button><button id="backForm">Voltar ao formulário</button><button id="clearForm">Limpar atendimento</button><span class="save" id="saveStatus">Salvamento automático ativo</span></div></div><div class="form" id="form"></div><div class="report" id="report"></div></div>
 
 <style id="p1-cause-meanings-style">
@@ -1446,11 +1505,13 @@ function groupedSelectionTable(groups,heads=['Categoria','Descrição / informa�
   if(!active.length)return '';
   let body='';
   for(const g of active){
-    g.items.forEach((item,i)=>{
-      body+=`<tr>${i===0?`<td rowspan="${g.items.length}" style="vertical-align:top;font-weight:700">${esc(g.label)}</td>`:''}<td>${editable(esc(item))}</td></tr>`;
+    g.items.forEach(item=>{
+      // Sem rowspan: repetir a categoria mantém cada linha independente e evita
+      // desencontro de bordas quando a tabela atravessa páginas no PDF.
+      body+=`<tr><td class="repeat-group-cell">${esc(g.label)}</td><td>${editable(esc(item))}</td></tr>`;
     });
   }
-  return `<table class="rtable"><thead><tr>${heads.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${body}</tbody></table>`;
+  return `<table class="rtable stable-table"><thead><tr>${heads.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${body}</tbody></table>`;
 }
 function p1GraphTable(d){
   const groups=[];
@@ -1460,10 +1521,12 @@ function p1GraphTable(d){
   });
   if(!groups.length)return '';
   let body='';
-  groups.forEach(g=>g.items.forEach((item,i)=>{
-    body+=`<tr>${i===0?`<td rowspan="${g.items.length}" style="vertical-align:top;font-weight:700">${esc(g.family)}</td>`:''}<td>${esc(item)}</td><td>${editable(esc(GRAPH_DESC[item]||''))}</td></tr>`;
+  groups.forEach(g=>g.items.forEach(item=>{
+    // A família é repetida em cada linha. É visualmente mais simples, porém
+    // muito mais estável em impressão que células mescladas (rowspan).
+    body+=`<tr><td class="repeat-group-cell">${esc(g.family)}</td><td>${esc(item)}</td><td>${editable(esc(GRAPH_DESC[item]||''))}</td></tr>`;
   }));
-  return `<table class="rtable"><thead><tr><th>Família</th><th>Gráfico</th><th>Descrição</th></tr></thead><tbody>${body}</tbody></table>`;
+  return `<table class="rtable stable-table"><thead><tr><th>Família</th><th>Gráfico</th><th>Descrição</th></tr></thead><tbody>${body}</tbody></table>`;
 }
 function p1CauseTable(d){
   const chakras=selected(d,'chakras');
@@ -1721,7 +1784,7 @@ h+=protocolBox('Protocolo 2 — Identificação de influências',p2Report);
 let cr=[];Object.keys(DATA.causes).forEach(k=>cr.push(...categoryRow(k,selected(d,'p3_causa_'+k))));
 let sr=[];sr.push(...categoryRow('Sentimentos primários',selected(d,'p3_sent_prim')));sr.push(...categoryRow('Outros sentimentos associados',selected(d,'p3_sent_assoc')));
 const oracleContext=(d.fields.orac_interpretacao_contexto||'').trim();
-let p3Report=`<h3>Causas</h3>${table(cr,['Eixo','Descrição / informação'])}<h3>Sentimentos</h3>${table(sr,['Eixo','Descrição / informação'])}<h3>Tratamentos energéticos — Florais de Bach</h3>${table(rowsEditable(selected(d,'trat_bach'),BACH_DESC),['Floral','Descrição / informação'])}<h3>Tratamentos energéticos — Mesa Radiônica / Geometrias sagradas</h3>${table(graphRows(selected(d,'trat_geo')),['Gráfico','Descrição / informação'])}<h3>Tratamentos energéticos — Aromaterapia</h3>${table(categoryRow('Aromaterapia',selected(d,'trat_aroma')),['Eixo','Descrição / informação'])}<h3>Tratamentos energéticos — Outros tratamentos</h3>${textList(selected(d,'trat_outros'))}<h3>Leitura Oracular Integrada — Arcanos Maiores</h3>${table(rowsEditable(selected(d,'orac_taro'),DATA.tarot),['Arcano','Síntese interpretativa'])}<h3>Leitura Oracular Integrada — Oráculo Corpo & Alma</h3>${table(categoryRow('Oráculo Corpo & Alma',selected(d,'orac_corpo')),['Eixo','Descrição / informação'])}${oracleContext?`<div class="oracle-report-context"><strong>Interpretação no contexto da consulta</strong><div class="rtext">${editable(esc(oracleContext))}</div></div>`:''}`;
+let p3Report=`<h3>Causas</h3>${table(cr,['Eixo','Descrição / informação'])}<h3>Sentimentos</h3>${table(sr,['Eixo','Descrição / informação'])}<h3>Tratamentos energéticos — Florais de Bach</h3>${table(rowsEditable(selected(d,'trat_bach'),BACH_DESC),['Floral','Descrição / informação'])}<h3>Tratamentos energéticos — Mesa Radiônica / Geometrias sagradas</h3>${table(graphRows(selected(d,'trat_geo')),['Gráfico','Descrição / informação'])}<h3>Tratamentos energéticos — Aromaterapia</h3>${table(categoryRow('Aromaterapia',selected(d,'trat_aroma')),['Eixo','Descrição / informação'])}<h3>Tratamentos energéticos — Outros tratamentos</h3>${textList(selected(d,'trat_outros'))}<h3>Leitura Oracular Integrada — Arcanos Maiores</h3>${table(rowsEditable(selected(d,'orac_taro'),DATA.tarot),['Arcano','Síntese interpretativa'])}<h3>Leitura Oracular Integrada — Oráculo Corpo & Alma</h3>${table(categoryRow('Oráculo Corpo & Alma',selected(d,'orac_corpo')),['Eixo','Descrição / informação'])}${oracleContext?`<section class="oracle-report-context simple-long-text"><h4>Interpretação no contexto da consulta</h4><div class="rtext">${editable(esc(oracleContext))}</div></section>`:''}`;
 p3Report+=protocolComment(d,'comentario_p3');
 h+=protocolBox('Protocolo 3 — Sentimentos e leitura simbólica',p3Report);
 h+=finalSynthesis(d);
