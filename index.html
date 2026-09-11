@@ -449,6 +449,7 @@ input[type="checkbox"]:focus-visible{outline:2px solid #d8afc6;outline-offset:2p
 .final-synthesis .syn-floral{--syn-tone:#a9b582!important}
 .final-synthesis .syn-aroma{--syn-tone:#8eaaa5!important}
 .final-synthesis .syn-other{--syn-tone:#7896a1!important}
+.final-synthesis .syn-symbolic{--syn-tone:#b79b68!important;background:rgba(255,255,255,.91)!important}
 @media(max-width:800px){.final-synthesis .syn-item{grid-template-columns:54px 1fr!important;padding:18px!important;gap:14px!important}.final-synthesis .syn-marker{width:46px!important;height:46px!important;border-width:6px!important}}
 </style>
 
@@ -1334,7 +1335,7 @@ function finalSynthesis(d){
   const florals=synthesisFlorals(d);
   const aromas=synthesisAromatherapy(d);
   const others=synthesisOtherResources(d,geometries.length>0,florals.length>0,aromas.length>0);
-  const symbolic=selected(d,'orac_taro');
+  const symbolic=uniqueItems([...selected(d,'orac_taro'),...selected(d,'orac_corpo')]);
   const obsGerais=(d.fields.observacoes_gerais||'').trim();
   if(!geometries.length&&!florals.length&&!aromas.length&&!others.length&&!symbolic.length&&!obsGerais)return '';
   const card=(num,title,items,cls)=>items&&items.length?`<div class="syn-item ${cls}"><div class="syn-marker">${num}</div><div class="syn-card-body"><span class="syn-label">${esc(title)}</span><div class="syn-prescription">${esc(joinText(items))}</div></div></div>`:'';
