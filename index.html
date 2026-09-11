@@ -48,6 +48,9 @@ details[open] summary{border-bottom:1px solid rgba(90,65,84,.10)}
 .field textarea{min-height:88px;resize:vertical}
 .sub{font-size:16px;margin:20px 0 10px;border-bottom:1px solid #e5dde3;padding-bottom:7px;color:#654e60}
 .checks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px 11px}
+.checks-column-flow{display:block!important;column-count:3;column-gap:28px}
+.checks-column-flow label{display:block!important;break-inside:avoid;page-break-inside:avoid;margin:0 0 7px 0}
+@media(max-width:800px){.checks-column-flow{column-count:1}}
 .checks label{display:flex;gap:8px;align-items:flex-start;padding:7px 8px;border-radius:8px;transition:.12s ease}
 .checks label:hover{background:#faf5f8}
 .checks input{margin-top:3px;accent-color:var(--accent)}
@@ -1020,7 +1023,19 @@ function details(title,body,cls=''){return `<details class="${esc(cls)}"><summar
 function protocol(title,body,hint=''){return `<section class="protocol"><div class="protocol-title"><div><h2>${esc(title)}</h2>${hint?`<p>${esc(hint)}</p>`:''}</div></div><div class="protocol-body">${body}</div></section>`}
 function checks(group,items,cols='checks'){return `<div class="${cols}">${items.map(x=>`<label><input type="checkbox" data-group="${esc(group)}" value="${esc(x)}"> <span>${esc(x)}</span></label>`).join('')}</div>`}
 function field(id,label,type='text'){return `<div class="field"><label for="${id}">${esc(label)}</label>${type==='textarea'?`<textarea id="${id}" data-field="${id}"></textarea>`:`<input id="${id}" type="${type}" data-field="${id}">`}</div>`}
+function checksColumnMajor(group,items,columns=3){
+  const rows=Math.ceil(items.length/columns),ordered=[];
+  for(let r=0;r<rows;r++)for(let c=0;c<columns;c++){
+    const i=c*rows+r;
+    if(i<items.length)ordered.push(items[i]);
+  }
+  return checks(group,ordered);
+}
 function axis(title,group,items,cls=''){return details(title,checks(group,items),cls)}
+function alphaOtherLast(items){const a=[...items];const outros=a.filter(x=>String(x).trim().toLocaleLowerCase('pt-BR')==='outros');const rest=a.filter(x=>String(x).trim().toLocaleLowerCase('pt-BR')!=='outros').sort((x,y)=>String(x).localeCompare(String(y),'pt-BR',{sensitivity:'base'}));return [...rest,...outros]}
+function axisColumnMajor(title,group,items,cls=''){return details(title,checksColumnMajor(group,items,3),cls)}
+function checksColumnFlow(group,items){return `<div class="checks checks-column-flow">${items.map(x=>`<label><input type="checkbox" data-group="${esc(group)}" value="${esc(x)}"> <span>${esc(x)}</span></label>`).join('')}</div>`}
+function axisColumnFlow(title,group,items,cls=''){return details(title,checksColumnFlow(group,items),cls)}
 function protocolCommentField(id){return `<div class="protocol-comments-input" style="margin:16px 2px 2px;padding-top:13px;border-top:1px solid #ddd5dd"><label for="${id}" style="display:block;font-weight:700;margin-bottom:6px">Comentários do protocolo</label><textarea id="${id}" data-field="${id}" rows="4" style="width:100%;min-height:90px;resize:vertical;border:1px solid #d8d2dc;border-radius:12px;padding:11px 12px;font:inherit;line-height:1.45;box-sizing:border-box" placeholder="Comentários específicos deste protocolo (opcional)..."></textarea></div>`}
 
 const BACH_DESC={
@@ -1104,7 +1119,7 @@ formHTML+=protocol('5. Protocolo 2 — Identificação de influências',p2,'Os b
 let p3='';
 let p3c=''; Object.entries(DATA.causes).forEach(([k,v])=>p3c+=axis('Causas '+k,'p3_causa_'+k,v,'axis-box axis-warm'));
 p3+=details('Causas',p3c,'axis-box axis-warm');
-p3+=details('Sentimentos',axis('Sentimentos primários','p3_sent_prim',DATA.primary,'axis-box axis-lilac')+axis('Outros sentimentos associados','p3_sent_assoc',DATA.associated,'axis-box axis-lilac'),'axis-box axis-lilac');
+p3+=details('Sentimentos',axis('Sentimentos primários','p3_sent_prim',DATA.primary,'axis-box axis-lilac')+axisColumnMajor('Outros sentimentos associados','p3_sent_assoc',DATA.associated,'axis-box axis-lilac'),'axis-box axis-lilac');
 const BACH_GROUPS={
   'Medo':['Rock Rose','Mimulus','Cherry Plum','Aspen','Red Chestnut'],
   'Incerteza e insegurança':['Cerato','Scleranthus','Gentian','Gorse','Hornbeam','Wild Oat'],
@@ -1117,7 +1132,7 @@ const BACH_GROUPS={
 let treatments='';
 let bachHTML=''; Object.entries(BACH_GROUPS).forEach(([k,v])=>bachHTML+=axis(k,'trat_bach',v,'axis-box axis-sage'));
 treatments+=details('Eixo 1 — Florais de Bach',bachHTML,'axis-box axis-sage');
-treatments+=axis('Eixo 2 — Mesa Radiônica — Geometrias sagradas','trat_geo',DATA.sacred,'axis-box axis-sage');
+treatments+=axisColumnFlow('Eixo 2 — Mesa Radiônica — Geometrias sagradas','trat_geo',alphaOtherLast(DATA.sacred),'axis-box axis-sage');
 treatments+=axis('Eixo 3 — Aromaterapia','trat_aroma',DATA.essential,'axis-box axis-sage');
 treatments+=axis('Eixo 4 — Outros tratamentos energéticos','trat_outros',DATA.otherTreat,'axis-box axis-sage');
 p3+=details('Tratamentos energéticos',treatments,'axis-box axis-sage');
