@@ -1309,6 +1309,34 @@ input[type="checkbox"]:focus-visible{outline:2px solid #d8afc6;outline-offset:2p
 }
 </style>
 
+
+<style id="solar-p1-graph-rowspan-v22">
+/* Protocolo 1 — categoria-mãe em célula mesclada, conforme padrão editorial. */
+.p1-graph-table .merged-group-cell{
+  font-weight:700;
+  vertical-align:top;
+  width:18%;
+}
+.p1-graph-table th:nth-child(1){width:18%}
+.p1-graph-table th:nth-child(2){width:24%}
+.p1-graph-table th:nth-child(3){width:58%}
+.p1-graph-table tbody.graph-family-group+tbody.graph-family-group tr:first-child td{
+  border-top:1px solid #ddd4ca;
+}
+@media print{
+  /* Rowspan só é estável se a família não for fragmentada entre páginas. */
+  table.p1-graph-table tbody.graph-family-group{
+    break-inside:avoid!important;
+    page-break-inside:avoid!important;
+  }
+  table.p1-graph-table .merged-group-cell{
+    break-inside:avoid!important;
+    page-break-inside:avoid!important;
+    vertical-align:top!important;
+  }
+}
+</style>
+
 </head><body><div class="app"><div class="top"><h1>RADIESTESIA SOLAR — LIMPEZA E PROTEÇÃO — ATENDIMENTO INICIAL</h1><p><strong>FORMULÁRIO — USO INTERNO DO TERAPEUTA.</strong> Aqui podem constar lembretes, orientações de preenchimento e observações de trabalho. O relatório gerado é destinado ao cliente e apresenta somente informações pertinentes ao atendimento.</p><div class="toolbar"><button class="primary" id="makeReport">Gerar / atualizar relatório</button><button id="printReport">Imprimir / salvar PDF</button><button id="docxReport">Exportar DOCX (editável)</button><button id="digitalReport">Versão digital contínua</button><button id="backForm">Voltar ao formulário</button><button id="clearForm">Limpar atendimento</button><span class="save" id="saveStatus">Salvamento automático ativo</span></div></div><div class="form" id="form"></div><div class="report" id="report"></div></div>
 
 <style id="p1-cause-meanings-style">
@@ -1680,13 +1708,16 @@ function p1GraphTable(d){
     if(items.length)groups.push({family,items});
   });
   if(!groups.length)return '';
-  let body='';
-  groups.forEach(g=>g.items.forEach(item=>{
-    // A família é repetida em cada linha. É visualmente mais simples, porém
-    // muito mais estável em impressão que células mescladas (rowspan).
-    body+=`<tr><td class="repeat-group-cell">${esc(g.family)}</td><td>${esc(item)}</td><td>${editable(esc(GRAPH_DESC[item]||''))}</td></tr>`;
-  }));
-  return `<table class="rtable stable-table"><thead><tr><th>Família</th><th>Gráfico</th><th>Descrição</th></tr></thead><tbody>${body}</tbody></table>`;
+
+  // Padrão editorial adotado: a categoria-mãe aparece uma única vez,
+  // em célula mesclada verticalmente para todos os gráficos daquela família.
+  // Cada família recebe seu próprio <tbody> para manter o grupo coeso no PDF.
+  const bodies=groups.map(g=>{
+    const rows=g.items.map((item,i)=>`<tr>${i===0?`<td class="merged-group-cell" rowspan="${g.items.length}">${esc(g.family)}</td>`:''}<td>${esc(item)}</td><td>${editable(esc(GRAPH_DESC[item]||''))}</td></tr>`).join('');
+    return `<tbody class="graph-family-group">${rows}</tbody>`;
+  }).join('');
+
+  return `<table class="rtable stable-table p1-graph-table"><thead><tr><th>Família</th><th>Gráfico</th><th>Descrição</th></tr></thead>${bodies}</table>`;
 }
 function p1CauseTable(d){
   const chakras=selected(d,'chakras');
