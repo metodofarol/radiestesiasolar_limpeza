@@ -1,6 +1,9 @@
 # RADIESTESIA SOLAR
 
-Versão em que o formulário permanece visível e inalterado após a geração do relatório.
-O relatório é inserido ao final da página, continua editável e possui botão próprio para imprimir/salvar em PDF.
+Atualização do relatório — Protocolo 1:
 
-Os significados automáticos de alguns gráficos foram redigidos de forma sintética e parafraseada a partir das referências fornecidas pelo usuário. Quando não há descrição suficientemente segura na base consultada, o campo permanece editável para preenchimento manual.
+- Padrões/causas aparecem hierarquizados por Campo emocional e Campo mental.
+- A categoria-mãe aparece uma única vez com célula mesclada verticalmente.
+- Cada causa selecionada ocupa sua própria linha na segunda coluna.
+- Não são inseridas interpretações genéricas quando a fonte disponível só oferece interpretações cruzadas por chakra e tipo de limite.
+- As demais funcionalidades e a geração/impressão do relatório foram preservadas.

@@ -114,6 +114,47 @@ function protocol(title,body,hint=''){return `<section class="protocol"><div cla
 function checks(group,items,cols='checks'){return `<div class="${cols}">${items.map(x=>`<label><input type="checkbox" data-group="${esc(group)}" value="${esc(x)}"> <span>${esc(x)}</span></label>`).join('')}</div>`}
 function field(id,label,type='text'){return `<div class="field"><label for="${id}">${esc(label)}</label>${type==='textarea'?`<textarea id="${id}" data-field="${id}"></textarea>`:`<input id="${id}" type="${type}" data-field="${id}">`}</div>`}
 function axis(title,group,items,cls=''){return details(title,checks(group,items),cls)}
+
+const BACH_DESC={
+  "Agrimony": "Indicado quando sofrimento, preocupação ou inquietação são ocultados por uma aparência alegre. No sistema Bach, busca favorecer autenticidade emocional, paz interior e capacidade de reconhecer e expressar o que realmente se sente.",
+  "Aspen": "Relacionado a medos vagos, pressentimentos e apreensões sem causa definida. No sistema Bach, busca favorecer sensação de segurança, confiança e serenidade diante do desconhecido.",
+  "Beech": "Associado à intolerância, crítica excessiva e dificuldade de aceitar diferenças ou imperfeições. No sistema Bach, busca favorecer tolerância, compreensão, empatia e uma percepção mais generosa das pessoas.",
+  "Centaury": "Indicado para dificuldade em dizer não, submissão e excesso de disponibilidade às demandas alheias. No sistema Bach, busca favorecer autodeterminação, firmeza e capacidade de estabelecer limites saudáveis sem perder a disposição para ajudar.",
+  "Cerato": "Relacionado à falta de confiança no próprio julgamento e à busca repetida de confirmação externa. No sistema Bach, busca favorecer confiança na própria percepção, autonomia nas decisões e escuta da sabedoria interior.",
+  "Cherry Plum": "Associado ao medo de perder o controle sobre pensamentos, emoções ou impulsos. No sistema Bach, busca favorecer autocontrole, calma mental e capacidade de atravessar momentos de forte tensão com maior equilíbrio.",
+  "Chestnut Bud": "Indicado para dificuldade em aprender com a experiência e tendência a repetir padrões ou erros. No sistema Bach, busca favorecer atenção às próprias vivências, assimilação das lições e escolhas mais conscientes.",
+  "Chicory": "Relacionado a apego possessivo, cobrança afetiva e necessidade intensa de atenção ou reciprocidade. No sistema Bach, busca favorecer amor mais livre e incondicional, cuidado sem controle e respeito à autonomia do outro.",
+  "Clematis": "Associado a devaneio, excesso de fantasia e pouca presença no momento atual. No sistema Bach, busca favorecer presença, interesse pela realidade e capacidade de transformar imaginação e criatividade em ação concreta.",
+  "Crab Apple": "Indicado para autorrejeição, sensação de impureza ou preocupação excessiva com aspectos de si. No sistema Bach, busca favorecer autoaceitação, reconciliação com o próprio corpo e uma relação mais equilibrada com limpeza e imperfeições.",
+  "Elm": "Relacionado à sensação temporária de não dar conta diante de muitas responsabilidades. No sistema Bach, busca favorecer recuperação da confiança na própria capacidade, senso de proporção e administração mais equilibrada das tarefas.",
+  "Gentian": "Associado ao desânimo após contratempos, dificuldades ou resultados abaixo do esperado. No sistema Bach, busca favorecer perseverança, confiança e disposição para retomar o caminho sem transformar obstáculos em derrota.",
+  "Gorse": "Indicado quando predominam desesperança e sensação de que nada mais pode melhorar. No sistema Bach, busca favorecer renovação da esperança, abertura a novas possibilidades e disposição para tentar novamente.",
+  "Heather": "Relacionado à necessidade intensa de atenção e à tendência de concentrar conversas e preocupações em si. No sistema Bach, busca favorecer escuta genuína, interesse pelo outro e capacidade de estabelecer trocas mais recíprocas.",
+  "Holly": "Associado a ciúme, inveja, hostilidade, suspeita e raiva dirigida aos outros. No sistema Bach, busca favorecer abertura afetiva, generosidade, compaixão e uma experiência menos defensiva dos vínculos.",
+  "Honeysuckle": "Indicado para apego ao passado, nostalgia ou dificuldade de seguir adiante após experiências anteriores. No sistema Bach, busca favorecer presença no agora e capacidade de integrar as lembranças sem permanecer preso a elas.",
+  "Hornbeam": "Relacionado ao cansaço antecipatório e à sensação de falta de energia antes mesmo de começar uma tarefa. No sistema Bach, busca favorecer disposição mental, iniciativa e confiança para enfrentar as atividades cotidianas.",
+  "Impatiens": "Associado à impaciência, irritação com lentidão e preferência por fazer tudo rapidamente. No sistema Bach, busca favorecer paciência, tolerância e respeito ao ritmo próprio e alheio.",
+  "Larch": "Indicado para falta de autoconfiança e expectativa de fracasso antes de tentar. No sistema Bach, busca favorecer confiança nas próprias capacidades, iniciativa e disposição para experimentar sem se definir antecipadamente pela possibilidade de falhar.",
+  "Mimulus": "Relacionado a medos conhecidos e nomeáveis, além de timidez e receios concretos do cotidiano. No sistema Bach, busca favorecer coragem tranquila, confiança e capacidade de enfrentar situações temidas com maior serenidade.",
+  "Mustard": "Associado a períodos de tristeza profunda que surgem sem causa aparente. No sistema Bach, busca favorecer estabilidade emocional, luminosidade interior e recuperação gradual da sensação de alegria quando esse estado sombrio se instala.",
+  "Oak": "Indicado para quem continua lutando e trabalhando além dos próprios limites, mesmo exausto. No sistema Bach, busca favorecer força com flexibilidade, reconhecimento dos limites e capacidade de descansar sem abandonar responsabilidades importantes.",
+  "Olive": "Relacionado à exaustão após esforço físico ou mental prolongado. No sistema Bach, busca favorecer sensação de renovação, recuperação da energia e reconhecimento da necessidade legítima de repouso e regeneração.",
+  "Pine": "Associado à culpa, autorrecriminação e tendência a assumir responsabilidade excessiva por erros ou problemas. No sistema Bach, busca favorecer autoaceitação, avaliação mais justa das próprias responsabilidades e capacidade de aprender sem autopunição.",
+  "Red Chestnut": "Indicado para preocupação e medo excessivos pelo bem-estar de pessoas queridas. No sistema Bach, busca favorecer confiança, serenidade e um cuidado amoroso que não seja dominado pela antecipação de perigos.",
+  "Rock Rose": "Relacionado a terror, pânico e medo intenso ou paralisante. No sistema Bach, busca favorecer coragem, presença de espírito e capacidade de responder com maior firmeza em situações percebidas como extremas.",
+  "Rock Water": "Associado à autoexigência severa, rigidez, repressão e disciplina excessiva consigo. No sistema Bach, busca favorecer flexibilidade, leveza, autocompaixão e capacidade de manter valores sem transformar a vida em regras inflexíveis.",
+  "Scleranthus": "Indicado para indecisão e oscilação entre alternativas. No sistema Bach, busca favorecer clareza, equilíbrio interno e capacidade de escolher com maior segurança e constância.",
+  "Star of Bethlehem": "Relacionado aos efeitos emocionais de choque, trauma, susto, perda ou acontecimentos marcantes. No sistema Bach, busca favorecer consolo, integração da experiência e recuperação de uma sensação de amparo e equilíbrio interior.",
+  "Sweet Chestnut": "Associado à angústia mental extrema e à sensação de ter chegado ao limite das próprias forças. No sistema Bach, busca favorecer esperança, abertura para uma nova perspectiva e sensação de renovação interior após períodos de profundo sofrimento.",
+  "Vervain": "Indicado para entusiasmo excessivo, tensão por idealismo e desejo intenso de convencer os outros. No sistema Bach, busca favorecer moderação, flexibilidade e capacidade de defender ideias com calma, respeito e menor desgaste.",
+  "Vine": "Relacionado a autoritarismo, inflexibilidade e tendência a impor a própria vontade. No sistema Bach, busca favorecer liderança construtiva, respeito pela autonomia alheia e uso da força pessoal para orientar em vez de dominar.",
+  "Walnut": "Associado a períodos de mudança e à vulnerabilidade a influências externas que desviam a pessoa de suas escolhas. No sistema Bach, busca favorecer constância, adaptação às transições e fidelidade ao próprio caminho.",
+  "Water Violet": "Indicado para reserva e autossuficiência que podem se transformar em distanciamento ou isolamento. No sistema Bach, busca favorecer proximidade, disponibilidade afetiva e conexão com os outros preservando autonomia e dignidade.",
+  "White Chestnut": "Relacionado a pensamentos indesejados, repetitivos e discussões mentais difíceis de interromper. No sistema Bach, busca favorecer quietude, clareza e capacidade de direcionar a atenção sem permanecer preso ao ciclo de ruminação.",
+  "Wild Oat": "Associado à incerteza sobre vocação, direção ou propósito, especialmente quando existem várias possibilidades. No sistema Bach, busca favorecer clareza de propósito, discernimento e capacidade de orientar talentos para um caminho significativo.",
+  "Wild Rose": "Indicado para apatia, resignação e aceitação passiva de uma situação sem iniciativa para mudá-la. No sistema Bach, busca favorecer interesse, vitalidade emocional e participação mais ativa na própria vida.",
+  "Willow": "Relacionado a ressentimento, amargura, autocomiseração e sensação persistente de injustiça. No sistema Bach, busca favorecer responsabilidade pelas próprias escolhas, capacidade de seguir adiante e uma relação menos presa às mágoas do passado."
+};
 const CHAKRAS={
 'Básico':{nome:'Chakra Básico (Muladhara)',resumo:'Tradicionalmente associado ao enraizamento, à segurança, à estabilidade e à sustentação da energia vital.'},
 'Sacral':{nome:'Chakra Sacral (Svadhishana)',resumo:'Tradicionalmente associado às emoções, à criatividade, ao prazer, à intimidade e à capacidade de vínculo e troca.'},
@@ -227,11 +268,22 @@ function limitRows(d){
   }
   return rows;
 }
-function p1CauseRows(d){
-  const rows=[];
-  for(const x of selected(d,'p1_emocional')) rows.push([esc('Campo emocional — '+x),editable('')]);
-  for(const x of selected(d,'p1_mental')) rows.push([esc('Campo mental — '+x),editable('')]);
-  return rows;
+function groupedSelectionTable(groups,heads=['Categoria','Descrição / informação']){
+  const active=groups.filter(g=>g.items&&g.items.length);
+  if(!active.length)return '';
+  let body='';
+  for(const g of active){
+    g.items.forEach((item,i)=>{
+      body+=`<tr>${i===0?`<td rowspan="${g.items.length}" style="vertical-align:top;font-weight:700">${esc(g.label)}</td>`:''}<td>${editable(esc(item))}</td></tr>`;
+    });
+  }
+  return `<table class="rtable"><thead><tr>${heads.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${body}</tbody></table>`;
+}
+function p1CauseTable(d){
+  return groupedSelectionTable([
+    {label:'Campo emocional',items:selected(d,'p1_emocional')},
+    {label:'Campo mental',items:selected(d,'p1_mental')}
+  ],['Campo','Padrão / causa selecionado']);
 }
 function pizzolRows(d){const rows=[]; const fields=selected(d,'p1_campo'), limits=selected(d,'p1_limite'), ch=selected(d,'chakras'); const causes=[...selected(d,'p1_emocional').map(x=>['Emocional',x]),...selected(d,'p1_mental').map(x=>['Mental',x])]; for(const [campo,label] of causes){if(!fields.includes(campo))continue; const source=DATA.pizzolLabelMap[label]||label; for(const chakra of ch)for(const lim of limits){const txt=DATA.pizzol?.[campo]?.[chakra]?.[lim]?.[source]||''; rows.push([`${esc(CHAKRAS[chakra]?.nome||('Chakra '+chakra))} — Campo ${esc(campo.toLowerCase())} — Limite ${esc(lim.toLowerCase())} — ${esc(label)}`,editable(esc(txt))])}} return rows}
 function report(){const d=getData();let h=`<div class="rpage" contenteditable="true"><h1>RADIESTESIA SOLAR</h1><div style="text-align:center;font-weight:700;margin:-4px 0 14px">Sistema de Observação, Limpeza, Alinhamento e Reintegração</div><div class="rtext" style="margin-bottom:16px"><strong>Sobre a Radiestesia e este relatório</strong><br><br>A radiestesia moderna consolidou-se como prática organizada de investigação energética no início do século XX, tendo como importante marco histórico a fundação, na França, em 1929, da Associação dos Amigos da Radiestesia. Embora possua uma tradição de uso e reúna relatos de benefícios percebidos por praticantes e consulentes, sua aplicação no campo energético e complementar da saúde não dispõe, até o momento, de evidências científicas suficientes para que seus métodos e resultados sejam considerados procedimentos diagnósticos ou terapêuticos da medicina ou da psicologia.<br><br>Este relatório apresenta uma <strong>leitura radiestésica complementar</strong>, destinada à observação e à reflexão sobre aspectos energéticos, emocionais, mentais e simbólicos investigados durante o atendimento. Seus resultados não constituem diagnóstico médico ou psicológico e não substituem consultas, exames, tratamentos ou acompanhamento realizados por profissionais habilitados da saúde.</div><div class="editnote">Relatório editável. Clique em qualquer texto para ajustar antes de imprimir.</div>`;
@@ -239,13 +291,16 @@ h+=sec('Identificação',table([[esc(d.fields.cliente||''),esc(d.fields.nascimen
 const br=bovisRows.map((x,i)=>[esc(x),esc(d.fields['bovis_'+i+'_antes']||''),esc(d.fields['bovis_'+i+'_depois']||'')]).filter(r=>r[1]||r[2]); h+=sec('Biômetro de Bovis',table(br,['Medição','Antes da sessão','Após a sessão']));
 h+=sec('Chakras envolvidos na questão',table(chakraRows(d),['Chakra','Síntese geral']));
 let gs=[];Object.keys(DATA.graphsLarissa).forEach(k=>selected(d,'p1_graf_'+k).forEach(x=>gs.push([esc(`${k} — ${x}`),editable(esc(GRAPH_DESC[x]||''))])));
-let p1Report=`<h3>Limites identificados</h3>${table(limitRows(d),['Campo e tipo de limite','Definição'])}<h3>Padrões / causas selecionados</h3>${table(p1CauseRows(d),['Campo e padrão','Observação do terapeuta'])}<h3>Tratamento radiônico — geometrias selecionadas</h3>${table(gs,['Gráfico / família','Descrição básica'])}`;
+let p1Report=`<h3>Limites identificados</h3>${table(limitRows(d),['Campo e tipo de limite','Definição'])}<h3>Padrões / causas selecionados</h3>${p1CauseTable(d)}<h3>Tratamento radiônico — geometrias selecionadas</h3>${table(gs,['Gráfico / família','Descrição básica'])}`;
 h+=sec('Protocolo Radiestésico 1 — Larissa Pizzol',p1Report);
-let p2r=[];Object.keys(DATA.p2).forEach(k=>p2r.push(...rowsEditable(selected(d,'p2_'+k).map(x=>`${k} — ${x}`))));
-let p2Report=`<h3>Interferências vibracionais ou causas</h3>${table(p2r)}<h3>Métodos de harmonização</h3>${table(rowsEditable(selected(d,'metodos_harm')))}`;
+function categoryRow(label,items){if(!items.length)return [];return [[esc(label),editable(esc(items.join(', ')))]]}
+function textList(items){if(!items.length)return '<div class="rtext">—</div>';return `<div class="rtext" contenteditable="true">${items.map(esc).join(' • ')}</div>`;}
+let p2r=[];Object.keys(DATA.p2).forEach(k=>p2r.push(...categoryRow(k,selected(d,'p2_'+k))));
+let p2Report=`<h3>Interferências vibracionais ou causas</h3>${table(p2r,['Eixo','Descrição / informação'])}<h3>Métodos de harmonização</h3>${textList(selected(d,'metodos_harm'))}`;
 h+=sec('Protocolo Radiestésico 2 — Luciana Silveira',p2Report);
-let cr=[];Object.keys(DATA.causes).forEach(k=>cr.push(...rowsEditable(selected(d,'p3_causa_'+k).map(x=>`${k} — ${x}`))));let sr=rowsEditable([...selected(d,'p3_sent_prim').map(x=>'Primário — '+x),...selected(d,'p3_sent_assoc').map(x=>'Associado — '+x)]);
-let p3Report=`<h3>Causas</h3>${table(cr)}<h3>Sentimentos</h3>${table(sr)}<h3>Tratamentos energéticos — Florais de Bach</h3>${table(rowsEditable(selected(d,'trat_bach')))}<h3>Tratamentos energéticos — Mesa Radiônica / Geometrias sagradas</h3>${table(graphRows(selected(d,'trat_geo')))}<h3>Tratamentos energéticos — Aromaterapia</h3>${table(rowsEditable(selected(d,'trat_aroma')))}<h3>Tratamentos energéticos — Outros tratamentos</h3>${table(rowsEditable(selected(d,'trat_outros')))}<h3>Leitura Oracular Integrada — Arcanos Maiores</h3>${table(rowsEditable(selected(d,'orac_taro'),DATA.tarot),['Arcano','Resumo aplicado / edição do terapeuta'])}<h3>Leitura Oracular Integrada — Oráculo Corpo & Alma</h3>${table(rowsEditable(selected(d,'orac_corpo')),['Carta','Leitura / aplicação'])}`;
+let cr=[];Object.keys(DATA.causes).forEach(k=>cr.push(...categoryRow(k,selected(d,'p3_causa_'+k))));
+let sr=[];sr.push(...categoryRow('Sentimentos primários',selected(d,'p3_sent_prim')));sr.push(...categoryRow('Outros sentimentos associados',selected(d,'p3_sent_assoc')));
+let p3Report=`<h3>Causas</h3>${table(cr,['Eixo','Descrição / informação'])}<h3>Sentimentos</h3>${table(sr,['Eixo','Descrição / informação'])}<h3>Tratamentos energéticos — Florais de Bach</h3>${table(rowsEditable(selected(d,'trat_bach'),BACH_DESC),['Floral','Descrição / informação'])}<h3>Tratamentos energéticos — Mesa Radiônica / Geometrias sagradas</h3>${table(graphRows(selected(d,'trat_geo')),['Gráfico','Descrição / informação'])}<h3>Tratamentos energéticos — Aromaterapia</h3>${table(categoryRow('Aromaterapia',selected(d,'trat_aroma')),['Eixo','Descrição / informação'])}<h3>Tratamentos energéticos — Outros tratamentos</h3>${textList(selected(d,'trat_outros'))}<h3>Leitura Oracular Integrada — Arcanos Maiores</h3>${table(rowsEditable(selected(d,'orac_taro'),DATA.tarot),['Arcano','Resumo aplicado / edição do terapeuta'])}<h3>Leitura Oracular Integrada — Oráculo Corpo & Alma</h3>${table(categoryRow('Oráculo Corpo & Alma',selected(d,'orac_corpo')),['Eixo','Descrição / informação'])}`;
 h+=sec('Protocolo Radiestésico 3 — Rodrigo Bittencourt',p3Report);
 h+=sec('Observações gerais do terapeuta holístico',`<div class="rtext">${editable(esc(d.fields.observacoes_gerais||''))}</div>`);
 h+=sec('Continuidade do cuidado',`<div class="rtext">Este atendimento pode ser compreendido como uma etapa de um processo mais amplo de autoconhecimento e cuidado integral. Quando fizer sentido para o seu momento, outros percursos podem complementar a investigação realizada, com protocolos direcionados à <strong>saúde e ao bem-estar, prosperidade, vida profissional e vocacional</strong>, além de práticas como <strong>Reiki e Tarô</strong>. A escolha de um novo percurso é sempre um convite à continuidade — não uma necessidade.</div>`);
